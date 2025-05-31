@@ -27,9 +27,9 @@ export const useViewMode = (): ViewMode | null => {
 
     // 새로운 랜덤 값 저장
     const random = Math.random() > 0.5 ? "grid" : "list";
-    // const expiresAt = now + 24 * 60 * 60 * 1000; // 24시간 후 만료
+    const expiresAt = now + 24 * 60 * 60 * 1000; // 24시간 후 만료
 
-    const expiresAt = now + 10 * 1000; // 테스트용 (10초 후 만료)
+    // const expiresAt = now + 10 * 1000; // 테스트용 (10초 후 만료)
     localStorage.setItem(
       STORAGE_KEY,
       JSON.stringify({ mode: random, expiresAt })

@@ -1,54 +1,56 @@
-# React + TypeScript + Vite
+상품 관리 과제
+🧩 개요
+이 프로젝트는 상품 리스트 페이지(/products)와 상품 생성 페이지(/products/new)를 구현하는 과제입니다. 사용자는 지정된 View 모드(리스트/카드)로 상품 목록을 확인하고, 새로운 상품을 생성할 수 있습니다.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Tailwind CSS v4 기반으로 스타일링되었으며, 유효성 검사, UI 컴포넌트 구조화, 사용자 경험 등을 중심으로 설계되었습니다.
 
-Currently, two official plugins are available:
+📐 개발 계획 및 설계
+Atomic Design 기반 컴포넌트 구성
+Label, Input, TextArea, Select 등 가장 기본 단위의 요소들을 atom으로 만들고, 이를 조합한 InputField, Dropbox 등은 molecule로 분리하여 재사용성과 일관성을 확보했습니다.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Tailwind CSS v4 적용
+Tailwind 최신 버전을 활용하여 불필요한 클래스 중복 없이 간결하게 스타일을 구성했습니다.
 
-## Expanding the ESLint configuration
+View Mode 정책 고려
+사용자는 처음 진입 시 지정된 View 모드(리스트/카드)만 볼 수 있으며, UI 전환이나 토글 기능은 제공하지 않습니다. localStorage를 조작해 강제로 모드를 바꾸는 행위는 기술적으로 완전히 방지할 수 없지만, 과제 범위상 프론트엔드 차원에서의 UI 제한으로 충분하다고 판단했습니다.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+🧠 주요 이슈 및 해결 과정
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+1. 숫자 입력 유효성 검증 유틸화
+   상품 생성 폼을 구현하면서 숫자 입력 유효성 검사를 register() 내에서 반복 작성하는 것이 비효율적이라는 판단하에 isRequiredTextNumber, isOptionalTextDecimal 유틸을 만들어 공통화했습니다.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+하지만 React Hook Form의 RegisterOptions 타입이 제네릭으로 구성되어 있어 타입 추론이 어렵고, 유틸 함수로 분리하면 오히려 더 복잡한 타입 오류가 발생했습니다. 타입 안정성을 유지하는 것보다 실용적인 코드 재사용이 더 중요하다고 판단해, as any를 사용하여 현실적인 타협을 했습니다.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+핵심은 코드의 재사용성과 가독성 확보였으며, 타입 완전성보다 유지보수성과 실용성을 우선했습니다.
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+2. 드롭다운 컴포넌트의 value-label 구조 설계
+   드롭박스를 구현할 때 value와 label을 항상 구분해야 할지 고민이 많았습니다.
+   단순 문자열 배열로도 충분해 보였지만, 사용자 친화적인 UI와 서버 통신 시의 확장성을 고려해 다음과 같은 결정을 내렸습니다:
+
+항상 { label: string, value: string } 구조를 따르도록 강제
+
+label === value인 경우도 동일한 구조 유지
+
+덕분에 서버 API나 UI가 변경되더라도 유연하게 대응할 수 있고, 드롭다운 재사용성도 높아졌습니다.
+
+"지금 복잡하게 짜면 나중엔 단순하게 쓴다"는 원칙을 다시 한 번 체감한 사례였습니다.
+
+🛠 실행 방법
+패키지 설치
+
+bash
+복사
+편집
+npm install
+개발 서버 실행
+
+bash
+복사
+편집
+npm run dev
+브라우저에서 확인
+
+bash
+복사
+편집
+http://localhost:5173/products

@@ -38,8 +38,8 @@ export default function ProductForm() {
     }
   };
 
-  const price = watch("price") || 0;
-  const discount = watch("discountPercentage") || 0;
+  const price = Number(watch("price")) || 0;
+  const discount = Number(watch("discountPercentage")) || 0;
   const finalPrice = price * (1 - discount / 100);
 
   return (
