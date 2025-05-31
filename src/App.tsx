@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProductsPage from "./pages/products";
-import ProductCreatePage from "./pages/product-create";
+import ProductsNewPage from "./pages/products-new";
 
 export default function App() {
   return (
@@ -12,7 +12,7 @@ export default function App() {
       <Route path="/products" element={<ProductsPage />} />
 
       {/* 상품 생성 */}
-      <Route path="/product-create" element={<ProductCreatePage />} />
+      <Route path="/products/new" element={<ProductsNewPage />} />
     </Routes>
   );
 }
